@@ -6,8 +6,44 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		000000000000000200000010 /* DirectLibraryHelper/HelperMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000003 /* DirectLibraryHelper/HelperMain.swift */; };
+		000000000000000200000011 /* DirectLibraryHelper/HelperModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000004 /* DirectLibraryHelper/HelperModels.swift */; };
+		000000000000000200000012 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000006 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift */; };
+		000000000000000200000013 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000007 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift */; };
+		000000000000000200000051 /* PhotoLibrariesDirectHelper in Embed Helper */ = {isa = PBXBuildFile; fileRef = 000000000000000200000001 /* PhotoLibrariesDirectHelper */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		000000000000000200000041 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000200000000;
+			remoteInfo = PhotoLibrariesDirectHelper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		000000000000000200000050 /* Embed Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Helpers";
+			dstSubfolder = Product;
+			files = (
+				000000000000000200000051 /* PhotoLibrariesDirectHelper in Embed Helper */,
+			);
+			name = "Embed Helper";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Photo Libraries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Libraries.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000200000001 /* PhotoLibrariesDirectHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PhotoLibrariesDirectHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000200000003 /* DirectLibraryHelper/HelperMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectLibraryHelper/HelperMain.swift; sourceTree = "<group>"; };
+		000000000000000200000004 /* DirectLibraryHelper/HelperModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectLibraryHelper/HelperModels.swift; sourceTree = "<group>"; };
+		000000000000000200000005 /* DirectLibraryHelper/Helper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = DirectLibraryHelper/Helper.entitlements; sourceTree = "<group>"; };
+		000000000000000200000006 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift"; sourceTree = "<group>"; };
+		000000000000000200000007 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo Libraries/PhotoKit/DirectLibraryWorker.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -24,6 +60,11 @@
 			files = (
 			);
 		};
+		000000000000000200000022 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -31,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* Photo Libraries */,
+				000000000000000200000002 /* DirectLibraryHelper */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -39,8 +81,21 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000120 /* Photo Libraries.app */,
+				000000000000000200000001 /* PhotoLibrariesDirectHelper */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		000000000000000200000002 /* DirectLibraryHelper */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000200000003 /* DirectLibraryHelper/HelperMain.swift */,
+				000000000000000200000004 /* DirectLibraryHelper/HelperModels.swift */,
+				000000000000000200000005 /* DirectLibraryHelper/Helper.entitlements */,
+				000000000000000200000006 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift */,
+				000000000000000200000007 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift */,
+			);
+			name = DirectLibraryHelper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -53,8 +108,12 @@
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
+				000000000000000200000050 /* Embed Helper */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				000000000000000200000040 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* Photo Libraries */,
@@ -63,6 +122,20 @@
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Photo Libraries.app */;
 			productType = "com.apple.product-type.application";
+		};
+		000000000000000200000000 /* PhotoLibrariesDirectHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000200000030 /* Build configuration list for PBXNativeTarget "PhotoLibrariesDirectHelper" */;
+			buildPhases = (
+				000000000000000200000020 /* Sources */,
+				000000000000000200000022 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			name = PhotoLibrariesDirectHelper;
+			productName = PhotoLibrariesDirectHelper;
+			productReference = 000000000000000200000001 /* PhotoLibrariesDirectHelper */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -75,6 +148,9 @@
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					000000000000000100000000 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					000000000000000200000000 = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
@@ -94,6 +170,7 @@
 			projectRoot = "";
 			targets = (
 				000000000000000100000000 /* Photo Libraries */,
+				000000000000000200000000 /* PhotoLibrariesDirectHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -112,7 +189,24 @@
 			files = (
 			);
 		};
+		000000000000000200000020 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				000000000000000200000010 /* DirectLibraryHelper/HelperMain.swift in Sources */,
+				000000000000000200000011 /* DirectLibraryHelper/HelperModels.swift in Sources */,
+				000000000000000200000012 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift in Sources */,
+				000000000000000200000013 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift in Sources */,
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		000000000000000200000040 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000200000000 /* PhotoLibrariesDirectHelper */;
+			targetProxy = 000000000000000200000041 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "Photo Libraries" */ = {
@@ -169,7 +263,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -233,7 +326,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -250,76 +342,114 @@
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "Photo Libraries" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Photo Libraries/Photo Libraries.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260929;
 				DEVELOPMENT_TEAM = WX793X49GJ;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Libraries";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Photo Libraries uses Apple Events when you explicitly ask it to inspect, export from, or import into a selected library through the Photos app.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Photo Libraries adds photos and videos to the System Photo Library only when you explicitly request a copy or move.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo Libraries accesses the System Photo Library to inspect items and, only after explicit confirmation, import copies or delete a moved source.";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunny.photo-libraries";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Debug;
 		};
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "Photo Libraries" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Photo Libraries/Photo Libraries.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260929;
 				DEVELOPMENT_TEAM = WX793X49GJ;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Libraries";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Photo Libraries uses Apple Events when you explicitly ask it to inspect, export from, or import into a selected library through the Photos app.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Photo Libraries adds photos and videos to the System Photo Library only when you explicitly request a copy or move.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo Libraries accesses the System Photo Library to inspect items and, only after explicit confirmation, import copies or delete a moved source.";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunny.photo-libraries";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+			};
+			name = Release;
+		};
+		000000000000000200000031 /* Debug configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DirectLibraryHelper/Helper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20260925;
+				DEVELOPMENT_TEAM = WX793X49GJ;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				PRODUCT_NAME = PhotoLibrariesDirectHelper;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DIRECT_LIBRARY_HELPER DEBUG $(inherited)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		000000000000000200000032 /* Release configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DirectLibraryHelper/Helper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20260925;
+				DEVELOPMENT_TEAM = WX793X49GJ;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				PRODUCT_NAME = PhotoLibrariesDirectHelper;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DIRECT_LIBRARY_HELPER $(inherited)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -339,6 +469,14 @@
 			buildConfigurations = (
 				000000000000000111000000 /* Debug configuration for PBXNativeTarget "Photo Libraries" */,
 				000000000000000112000000 /* Release configuration for PBXNativeTarget "Photo Libraries" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000200000030 /* Build configuration list for PBXNativeTarget "PhotoLibrariesDirectHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000200000031 /* Debug configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */,
+				000000000000000200000032 /* Release configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */,
 			);
 			defaultConfigurationName = Release;
 		};
