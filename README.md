@@ -2,57 +2,57 @@
 
 ## Project Overview
 
-Photo Libraries 是 macOS 照片圖庫瀏覽器，讓使用者在同一個視窗查看系統照片圖庫與自行選取的 `.photoslibrary`，依日期、相簿和媒體類型瀏覽，並在明確確認後複製或搬移照片。程式會在自己的儲存空間建立搜尋索引與預覽資料；註冊圖庫的直接讀取、轉移與網頁分享有下述相容性及環境限制。
+Photo Libraries is a macOS photo library browser. It lets users view the system Photos library and selected `.photoslibrary` packages in one window, browse by date, album, and media type, and copy or move photos after explicit confirmation. The app creates search indexes and preview data in its own storage. Direct access to registered libraries, transfers, and web sharing have the compatibility and environment limits described below.
 
-## Features 與狀態
+## Features and Status
 
-- **Implemented（已接入）**：以 PhotoKit 瀏覽系統圖庫；以獲授權的圖庫套件建立非系統圖庫目錄；顯示相簿、縮圖、照片／影片、資訊面板、跨圖庫搜尋、地圖與由 metadata 產生的 Memories 建議。
-- **Implemented（已接入）**：從系統圖庫複製到註冊圖庫，或從註冊圖庫複製到系統圖庫；搬移時另行核對目的地並要求使用者確認來源刪除。轉移並非交易式，亦不保證保留所有編輯歷史與複合媒體資源。
-- **Optional；externally unverified**：Web Gallery 在設定了 `*.ts.net` Serve host、允許的 Tailscale login 及至少一個共享圖庫後，可於 app 啟動時嘗試啟動，也可由 Settings 手動啟停。它只監聽本機 `127.0.0.1:8766`；對外 HTTPS、身分標頭及可達性取決於另外設定的 Tailscale Serve。Apple Maps 網頁地圖另需可選的 MapKit JS token 與網路。
-- **Experimental / inactive**：`PoC/` 的獨立探針不在 app target；`PhotosAutomationClient` 的舊式目錄／預覽索引流程仍在 source，但目前的 app 啟動流程改用直接讀取。不能把這些路徑當成已驗證的正常功能。
+- **Implemented in source**: Browse the system library through PhotoKit; build catalogs for authorized non-system library packages; display albums, thumbnails, photos and videos, information panels, cross-library search, maps, and metadata-derived Memories suggestions.
+- **Implemented in source**: Copy from the system library to a registered library or from a registered library to the system library. Moves separately verify the destination and require confirmation before deleting the source. Transfers are not transactional and may not preserve every edit history or compound media resource.
+- **Optional; externally unverified**: Web Gallery can attempt to start with the app, or be started and stopped in Settings, after a `*.ts.net` Serve host, an allowed Tailscale login, and at least one shared library are configured. It listens only on local `127.0.0.1:8766`. External HTTPS, identity headers, and reachability depend on separately configured Tailscale Serve. The Apple Maps web map also requires an optional MapKit JS token and network access.
+- **Experimental / inactive**: The standalone probes in `PoC/` are outside the app target. The old catalog and preview indexing path in `PhotosAutomationClient` remains in source, but normal app startup now uses direct reading. Do not treat these paths as verified normal functionality.
 
-以上「已接入」是 source 狀態，**不表示本次已編譯或在裝置上成功執行**。實作細節見 [技術文件](TECHNICAL_DOCUMENTATION.md)。
+“Implemented in source” describes the source code only; it **does not mean this task compiled the app or verified it on a device**. See the [technical documentation](TECHNICAL_DOCUMENTATION.md) for implementation details.
 
 ## Requirements
 
-- macOS app 與內嵌的 `PhotoLibrariesDirectHelper` target 均設定 `MACOSX_DEPLOYMENT_TARGET = 27.0`、`SUPPORTED_PLATFORMS = macosx`、`SWIFT_VERSION = 5.0`；沒有受支援的 iOS target。
-- 使用可開啟 `Photo Libraries.xcodeproj`、具備對應 macOS SDK 的 Xcode。專案記錄建立工具版本 26.3，但**沒有宣告最低 Xcode 版本**；本次未驗證哪個 Xcode 版本可成功 build。
-- Swift app/helper 使用 Apple 系統 frameworks 與 SQLite3；沒有 Swift Package Manager、CocoaPods 或其他已宣告的第三方 app 依賴，也沒有套件 lockfile。
-- `Tools/generate_memory_music.py` 僅在重新產生已附帶的音樂資產時才需要 Python 3、NumPy 與 macOS `afconvert`；Python／NumPy 版本沒有固定，平常開啟 app 不需執行此工具。
+- The macOS app and embedded `PhotoLibrariesDirectHelper` target both set `MACOSX_DEPLOYMENT_TARGET = 27.0`, `SUPPORTED_PLATFORMS = macosx`, and `SWIFT_VERSION = 5.0`. There is no supported iOS target.
+- Use Xcode with the corresponding macOS SDK and support for opening `Photo Libraries.xcodeproj`. The project records Xcode tool version 26.3 but **does not declare a minimum Xcode version**; this task did not verify which Xcode version can build it.
+- The Swift app and helper use Apple system frameworks and SQLite3. No Swift Package Manager, CocoaPods, or other third-party app dependencies are declared, and there is no package lockfile.
+- `Tools/generate_memory_music.py` needs Python 3, NumPy, and macOS `afconvert` only when regenerating the bundled music assets. Python and NumPy versions are not pinned; normal app use does not require running this tool.
 
 ## Installation / Setup
 
-1. 取得 repository 後，在 root 執行 `open "Photo Libraries.xcodeproj"`，或從 Xcode 開啟該專案。
-2. 在 Xcode 選擇 macOS app target `Photo Libraries` 的 runnable，使用 Debug 或 Release 組態。`PhotoLibrariesDirectHelper` 是 app target 的依賴及內嵌工具；repository 沒有獨立提交的 shared `.xcscheme` 檔，請以本機 Xcode 顯示的 scheme 為準。
-3. 使用自己的開發者簽署設定。專案目前設為 Automatic signing 並含特定 development team；該值不是可攜的憑證或簽署保證。授權系統照片圖庫及選取 `.photoslibrary` 時，依 macOS 提示授予所需權限。
-4. 若要使用 Web Gallery，在 app 的 **Settings → Web Gallery** 輸入自己的 `<your-mac>.ts.net` host（有非標準 HTTPS port 時連同 port）、允許的 Tailscale login，並選擇共享圖庫；Tailscale Serve 必須由使用者另外設定為代理本機 `127.0.0.1:8766`。不要將 Funnel 當作此功能的設定。網頁地圖的 MapKit JS token 為可選設定，請在同一畫面輸入自己的值。
+1. After obtaining the repository, run `open "Photo Libraries.xcodeproj"` from its root, or open the project in Xcode.
+2. In Xcode, select the macOS app target `Photo Libraries` as the runnable and choose Debug or Release. `PhotoLibrariesDirectHelper` is an app target dependency and embedded tool. The repository does not include a separately committed shared `.xcscheme`; use the scheme shown by your local Xcode installation.
+3. Use your own developer signing configuration. The project currently uses Automatic signing and specifies a development team; that value is not a portable credential or a signing guarantee. Grant the permissions requested by macOS when authorizing the system Photos library or selecting a `.photoslibrary` package.
+4. To use Web Gallery, enter your `<your-mac>.ts.net` host (including any nonstandard HTTPS port), an allowed Tailscale login, and the shared libraries in **Settings → Web Gallery**. Configure Tailscale Serve separately to proxy local `127.0.0.1:8766`; do not use Funnel for this feature. A MapKit JS token for the web map is optional and can be entered on the same screen.
 
-在手機瀏覽 Web Gallery 時，橫向點開縮圖會讓相片使用整個網頁可用畫面；Info 預設隱藏，可按 ⓘ 顯示或收起，面板只供上下捲動。Safari 的 tab／工具列由瀏覽器控制，網頁無法保證在 Safari 分頁內持續隱藏。若希望不顯示 Safari tab，可在 iPhone Safari 選擇「分享 → 加入主畫面」，啟用「作為網頁 App 開啟」（Open as Web App）後從主畫面圖示進入；系統狀態列或主畫面指示器仍可能顯示。主畫面模式會在狀態列安全區域放置實色背景，不額外推低網頁內容；iOS 的實際模糊效果仍需在裝置上確認。此操作方式見 [Apple iPhone 使用手冊](https://support.apple.com/guide/iphone/iphea86e5236/ios)。
+When browsing Web Gallery on a phone in landscape orientation, opening a thumbnail lets the photo use the entire available web viewport. Info is hidden by default; tap ⓘ to show or hide its vertically scrolling panel. Safari controls its own tabs and toolbars, so the page cannot guarantee that they remain hidden in a Safari tab. To avoid Safari tabs, choose **Share → Add to Home Screen** in iPhone Safari, enable **Open as Web App**, and launch from the Home Screen icon. The system status bar or Home indicator may still appear. In Home Screen mode, the page places a solid background in the status bar safe area without pushing the web content down further. Its effect on iOS blur still needs device verification. See the [Apple iPhone User Guide](https://support.apple.com/guide/iphone/iphea86e5236/ios) for the Home Screen steps.
 
-Repository 沒有 `.env`、環境變數範例、API key 或憑證檔，也沒有依賴安裝步驟或可重現的 package-manager 指令。Web Gallery 設定與 Maps token 寫入 `UserDefaults`，不是環境變數或 Keychain。
+The repository has no `.env`, sample environment variables, API key or credential files, dependency installation steps, or reproducible package manager commands. Web Gallery settings and the Maps token are stored in `UserDefaults`, not environment variables or Keychain.
 
 ## How to Run
 
-在 Xcode 選 macOS app runnable 後，由你自行 Build／Run。程式在未設定 Web Gallery 時仍可進入本機瀏覽介面；實際圖庫內容、Photos 權限、非系統套件格式，以及某些可能需要下載的媒體，仍取決於所在 Mac。Web Gallery 對外模式需要 app 與 Mac 保持運作，且須另外配置 Tailscale Serve。Repository 沒有獨立 backend 或離線 demo fixture，也沒有可由已提交 shared scheme 證明的命令列 build/run 指令。
+Select the macOS app runnable in Xcode and perform Build/Run yourself. The app can open its local browsing interface without Web Gallery configured. Actual library content, Photos permissions, non-system package formats, and media that may need downloading depend on the Mac. External Web Gallery access requires the app and Mac to stay running and Tailscale Serve to be configured separately. The repository has no separate backend, offline demo fixture, or command-line build/run instructions backed by a committed shared scheme.
 
 ## Development
 
-目前沒有提交的測試 target、CI、lint、format、typecheck 或 fixture-validation 指令。`PoC/` 程式不屬於正常 build；音樂生成工具的原始指令是 `python3 Tools/generate_memory_music.py`，它會重寫音樂資產，僅在有意重新生成時執行。本次僅做文件與 source 靜態核對，**沒有執行 macOS Build／Test**。
+There is currently no committed test target, CI, lint, format, typecheck, or fixture validation command. Code in `PoC/` is outside the normal build. The original command for the music generator is `python3 Tools/generate_memory_music.py`; it rewrites music assets and should run only when regeneration is intended. This task performed documentation and static source checks only; **no macOS Build/Test was run**.
 
 ## Project Structure
 
-| 路徑 | 用途 |
+| Path | Purpose |
 | --- | --- |
-| `Photo Libraries/` | SwiftUI app、模型、圖庫註冊、PhotoKit、搜尋、Memories、視圖及 Web Gallery。 |
-| `DirectLibraryHelper/` | 內嵌 helper 的入口、跨行程資料模型與 sandbox entitlement。 |
-| `Photo Libraries.xcodeproj/` | Xcode targets、build settings 與專案設定。 |
-| `PoC/` | 未接入 app target 的實驗探針。 |
-| `Tools/` | 手動產生 Memories 音樂資產的工具。 |
+| `Photo Libraries/` | SwiftUI app, models, library registration, PhotoKit, search, Memories, views, and Web Gallery. |
+| `DirectLibraryHelper/` | Embedded helper entry point, cross-process data models, and sandbox entitlement. |
+| `Photo Libraries.xcodeproj/` | Xcode targets, build settings, and project configuration. |
+| `PoC/` | Experimental probes outside the app target. |
+| `Tools/` | Tool for manually generating Memories music assets. |
 
 ## Known Limitations
 
-非系統圖庫的媒體存取使用未公開 PhotoKit selector，目錄讀取依賴 Apple Photos 套件內部 SQLite schema；跨 macOS 版本的相容性、發佈／審核結果和真實圖庫行為均未由本次文件作業驗證。搜尋的系統圖庫文件不含 caption／keywords 全文；非系統圖庫的某些媒體類型篩選較少。地點名稱、網頁地圖、Tailscale 分享與遠端播放需要各自的系統或外部環境支援。轉移失敗或取消後可能留下已建立的目的地副本，請在重試或刪除來源前檢查兩個圖庫。
+Media access for non-system libraries uses unpublished PhotoKit selectors, and catalog reading depends on the internal SQLite schema of Apple Photos packages. This documentation task did not verify compatibility across macOS versions, distribution or review outcomes, or behavior with real libraries. Search documents for the system library do not include full caption or keyword text; some media-type filtering is more limited for non-system libraries. Place names, web maps, Tailscale sharing, and remote playback each require their respective system or external support. A failed or canceled transfer may leave destination copies behind; inspect both libraries before retrying or deleting the source.
 
 ## License
 
-Repository 沒有 project-wide `LICENSE` 或等效授權聲明；不能由此推定整個專案的授權。Apple frameworks、MapKit JS、NumPy 等外部元件各有自身條款，應與本專案授權分開確認。
+The repository has no project-wide `LICENSE` or equivalent license statement, so its overall license cannot be inferred. External components, including Apple frameworks, MapKit JS, and NumPy, have their own terms and should be checked separately from this project’s license.
