@@ -14,14 +14,17 @@ nonisolated struct WebGalleryHTTPResponse {
     let body: Data
     let file: WebGalleryHTTPFile?
     let unsatisfiedRangeLength: Int64?
+    let cacheable: Bool
 
     init(status: Int, contentType: String, body: Data,
-         file: WebGalleryHTTPFile? = nil, unsatisfiedRangeLength: Int64? = nil) {
+         file: WebGalleryHTTPFile? = nil, unsatisfiedRangeLength: Int64? = nil,
+         cacheable: Bool = false) {
         self.status = status
         self.contentType = contentType
         self.body = body
         self.file = file
         self.unsatisfiedRangeLength = unsatisfiedRangeLength
+        self.cacheable = cacheable
     }
 
     static func text(_ status: Int, _ message: String) -> Self {
@@ -59,14 +62,15 @@ nonisolated struct WebGalleryHTTPResponse {
         } else {
             rangeHeaders = ""
         }
+        let cacheHeaders = cacheable
+            ? "Cache-Control: private, max-age=3600\r\n"
+            : "Cache-Control: no-store, max-age=0\r\nPragma: no-cache\r\n"
         let header = """
         HTTP/1.1 \(status) \(reason)\r
         Content-Type: \(contentType)\r
         Content-Length: \(length)\r
         \(rangeHeaders)Connection: close\r
-        Cache-Control: no-store, max-age=0\r
-        Pragma: no-cache\r
-        X-Content-Type-Options: nosniff\r
+        \(cacheHeaders)X-Content-Type-Options: nosniff\r
         X-Frame-Options: DENY\r
         Referrer-Policy: strict-origin-when-cross-origin\r
         Cross-Origin-Resource-Policy: same-origin\r

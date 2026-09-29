@@ -45,6 +45,7 @@ final class WebGalleryServer: ObservableObject {
     private var retiredSystemVideoDirectories: Set<URL> = []
     private var systemVideoCacheGeneration = UUID()
     private static let maximumSystemVideoCacheEntries = 4
+    private var appIconPNGBySize: [Int: Data] = [:]
 
     private struct Context {
         let registry: LibraryRegistry
@@ -258,6 +259,27 @@ final class WebGalleryServer: ObservableObject {
                 contentType: "text/html; charset=utf-8",
                 body: Data(WebGalleryPage.html.utf8)
             )
+        case "/favicon.ico", "/photo-libraries-icon.ico":
+            guard query.isEmpty else { return .text(400, "Invalid icon request") }
+            guard let png = appIconPNG(size: 32) else {
+                return .text(500, "App icon unavailable")
+            }
+            var icon = Data([0, 0, 1, 0, 1, 0, 32, 32, 0, 0, 1, 0, 32, 0])
+            withUnsafeBytes(of: UInt32(png.count).littleEndian) { icon.append(contentsOf: $0) }
+            withUnsafeBytes(of: UInt32(22).littleEndian) { icon.append(contentsOf: $0) }
+            icon.append(png)
+            return WebGalleryHTTPResponse(
+                status: 200, contentType: "image/x-icon", body: icon, cacheable: true
+            )
+        case "/favicon.png", "/apple-touch-icon.png":
+            guard query.isEmpty else { return .text(400, "Invalid icon request") }
+            let size = components.path == "/favicon.png" ? 32 : 180
+            guard let icon = appIconPNG(size: size) else {
+                return .text(500, "App icon unavailable")
+            }
+            return WebGalleryHTTPResponse(
+                status: 200, contentType: "image/png", body: icon, cacheable: true
+            )
         case "/api/libraries":
             guard query.isEmpty else { return .text(400, "Invalid query") }
             do {
@@ -313,6 +335,11 @@ final class WebGalleryServer: ObservableObject {
                           || systemProvider.authorizationStatus().permitsReading }) else {
                     return .text(403, "Gallery unavailable")
                 }
+                let englishDate = DateFormatter()
+                englishDate.locale = Locale(identifier: "en_US")
+                englishDate.calendar = Calendar(identifier: .gregorian)
+                englishDate.dateStyle = .medium
+                englishDate.timeStyle = .none
                 return json(["memories": memories.map { memory -> [String: Any] in
                     let included = memory.photos.compactMap { visibleItems[$0.id] }
                     let cover = included.max { lhs, rhs in
@@ -322,9 +349,21 @@ final class WebGalleryServer: ObservableObject {
                             + min(Double(rhs.width) * Double(rhs.height), 100_000_000)
                         return left < right
                     }
+                    let dateRange = Calendar.current.isDate(memory.startDate, inSameDayAs: memory.endDate)
+                        ? englishDate.string(from: memory.startDate)
+                        : "\(englishDate.string(from: memory.startDate)) – \(englishDate.string(from: memory.endDate))"
+                    let title: String
+                    if memory.kind == .onThisDay {
+                        title = memory.suggestedTitle
+                    } else {
+                        let separator = memory.suggestedTitle.range(of: " · ", options: .backwards)
+                        let prefix = separator.map { String(memory.suggestedTitle[..<$0.lowerBound]) }
+                            ?? memory.suggestedTitle
+                        title = "\(prefix) · \(englishDate.string(from: memory.startDate))"
+                    }
                     return [
                         "id": memory.id, "kind": memory.kind.rawValue,
-                        "title": memory.suggestedTitle, "dateRange": memory.dateRange,
+                        "title": title, "dateRange": dateRange,
                         "cover": cover.map { $0.json as Any } ?? NSNull(),
                         "items": included.map(\.json)
                     ]
@@ -401,7 +440,12 @@ final class WebGalleryServer: ObservableObject {
                 }
                 var detail = item.json
                 detail["title"] = item.infoTitle
-                detail["dateText"] = item.date?.formatted(date: .long, time: .standard)
+                let englishDateTime = DateFormatter()
+                englishDateTime.locale = Locale(identifier: "en_US")
+                englishDateTime.calendar = Calendar(identifier: .gregorian)
+                englishDateTime.dateStyle = .long
+                englishDateTime.timeStyle = .medium
+                detail["dateText"] = item.date.map { englishDateTime.string(from: $0) }
                     ?? item.dateDescription
                 detail["details"] = snapshots[0].library.descriptor.kind.isSystemPhotoLibrary
                     ? Self.systemInfoDetails(for: item) : Self.registeredInfoDetails(for: item)
@@ -635,6 +679,27 @@ final class WebGalleryServer: ObservableObject {
         default:
             return .text(404, "Not found")
         }
+    }
+
+    private func appIconPNG(size: Int) -> Data? {
+        if let cached = appIconPNGBySize[size] { return cached }
+        guard let bitmap = NSBitmapImageRep(
+            bitmapDataPlanes: nil, pixelsWide: size, pixelsHigh: size,
+            bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+            isPlanar: false, colorSpaceName: .deviceRGB,
+            bytesPerRow: 0, bitsPerPixel: 0
+        ), let context = NSGraphicsContext(bitmapImageRep: bitmap) else { return nil }
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = context
+        NSApplication.shared.applicationIconImage.draw(
+            in: NSRect(x: 0, y: 0, width: size, height: size),
+            from: .zero, operation: .copy, fraction: 1
+        )
+        context.flushGraphics()
+        NSGraphicsContext.restoreGraphicsState()
+        guard let data = bitmap.representation(using: .png, properties: [:]) else { return nil }
+        appIconPNGBySize[size] = data
+        return data
     }
 
     /// Safari makes several range requests for one movie. Share the finished

@@ -84,6 +84,8 @@ flowchart LR
 
 內嵌網頁使用分頁、lazy image queue、AbortController／generation 防止過期結果覆蓋新畫面，並用瀏覽器 `localStorage` 保存版面、選取、縮放與捲動狀態。地圖依賴可選的 MapKit JS token 與 Apple CDN。實際網頁播放、Tailscale header 可信度、HTTPS 終止及跨裝置體驗均未由 repository 證明。
 
+手機橫向檢視器以 `(orientation:landscape) and (max-height:500px) and (hover:none) and (pointer:coarse)` 選取觸控版面：相片／影片在 `100dvh` 可用視窗中顯示，Info 預設收起；ⓘ 按鈕切換覆蓋在右側的 Info 面板，不縮小媒體區域。`.viewer-info` 設定 `overflow-x:hidden`、`overflow-y:auto` 與 `touch-action:pan-y`，限制面板自身的水平捲動並保留垂直捲動。一般縮圖檢視不呼叫 `requestFullscreen()`；該 API 在 source 中只用於 Memories 播放。CSS 的全視窗版面無法隱藏 Safari 自身的 tab／工具列；目前首頁未宣告 Web App Manifest 或 `apple-mobile-web-app-capable`，加入主畫面後的獨立 App 顯示方式仍依 iOS 版本與使用者選項而定。若 `navigator.standalone` 為 true，首頁會在 `html` 加上 `home-screen-web-app` class；手機版只以固定的 `body::before` 實色層覆蓋 `env(safe-area-inset-top)`，不對 `.app` 增加上方 padding。這是 source 中對主畫面模式狀態列區域的處理，並非已驗證可停用 iOS 自身的模糊效果。
+
 ## 6. Data Models and State：持久化與版本
 
 | 邊界 | Source 中的儲存方式與失效行為 |
@@ -146,4 +148,4 @@ Repository 未找到 XCTest／Swift Testing target、測試檔、fixture validat
 
 ## 本次文件驗證紀錄
 
-**Verified in this task**：已比對 source 與 `project.pbxproj` 的 target、平台、deployment target、helper、資料儲存路徑及 Gallery 設定；檢查兩份 Markdown 的 code fence、相對連結、個人絕對路徑與常見 credential 形態；`git diff --check` 及兩個新檔的 `git diff --no-index --check` 無空白錯誤。Git 狀態中的既有程式碼修改與未追蹤檔仍在，這次只新增兩份文件。沒有執行 Xcode Build／Test、瀏覽器或外部服務驗證。
+**Verified in this task**：已核對主畫面模式的狀態列處理及兩份文件的相關說明；執行 Swift source parsing、內嵌 JavaScript syntax check、Markdown code fence／相對連結檢查及 `git diff --check`。這些檢查不代表手機上的實際呈現。沒有執行 Xcode Build／Test、瀏覽器或外部服務驗證。

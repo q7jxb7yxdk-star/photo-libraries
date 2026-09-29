@@ -27,6 +27,8 @@ Photo Libraries 是 macOS 照片圖庫瀏覽器，讓使用者在同一個視窗
 3. 使用自己的開發者簽署設定。專案目前設為 Automatic signing 並含特定 development team；該值不是可攜的憑證或簽署保證。授權系統照片圖庫及選取 `.photoslibrary` 時，依 macOS 提示授予所需權限。
 4. 若要使用 Web Gallery，在 app 的 **Settings → Web Gallery** 輸入自己的 `<your-mac>.ts.net` host（有非標準 HTTPS port 時連同 port）、允許的 Tailscale login，並選擇共享圖庫；Tailscale Serve 必須由使用者另外設定為代理本機 `127.0.0.1:8766`。不要將 Funnel 當作此功能的設定。網頁地圖的 MapKit JS token 為可選設定，請在同一畫面輸入自己的值。
 
+在手機瀏覽 Web Gallery 時，橫向點開縮圖會讓相片使用整個網頁可用畫面；Info 預設隱藏，可按 ⓘ 顯示或收起，面板只供上下捲動。Safari 的 tab／工具列由瀏覽器控制，網頁無法保證在 Safari 分頁內持續隱藏。若希望不顯示 Safari tab，可在 iPhone Safari 選擇「分享 → 加入主畫面」，啟用「作為網頁 App 開啟」（Open as Web App）後從主畫面圖示進入；系統狀態列或主畫面指示器仍可能顯示。主畫面模式會在狀態列安全區域放置實色背景，不額外推低網頁內容；iOS 的實際模糊效果仍需在裝置上確認。此操作方式見 [Apple iPhone 使用手冊](https://support.apple.com/guide/iphone/iphea86e5236/ios)。
+
 Repository 沒有 `.env`、環境變數範例、API key 或憑證檔，也沒有依賴安裝步驟或可重現的 package-manager 指令。Web Gallery 設定與 Maps token 寫入 `UserDefaults`，不是環境變數或 Keychain。
 
 ## How to Run

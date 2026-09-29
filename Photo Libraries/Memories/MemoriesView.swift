@@ -169,7 +169,7 @@ struct MemoriesView: View {
         .toolbar {
             if let selectedMemory {
                 ToolbarItem(placement: .navigation) {
-                    Button("Back to Memories", systemImage: "arrow.left") {
+                    Button("Back to Memories", systemImage: "chevron.left") {
                         stopSlideshow()
                         selectedPhoto = nil
                         selectedMemoryID = nil
