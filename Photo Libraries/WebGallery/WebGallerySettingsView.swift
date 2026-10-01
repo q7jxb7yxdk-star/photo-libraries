@@ -7,6 +7,7 @@ struct WebGallerySettingsView: View {
     @ObservedObject var systemModel: SystemPhotoLibraryViewModel
     @ObservedObject var store: LibraryPreviewStore
     @State private var loginInput = ""
+    @ObservedObject private var backgroundService = WebGalleryBackgroundService.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -71,25 +72,36 @@ struct WebGallerySettingsView: View {
             }
             .formStyle(.grouped)
 
-            Text("Starting the gallery shares previews from the selected libraries. Recipients can save or screenshot photos they view. Keep the Mac and this app running; configure Tailscale Serve separately and never use Funnel for this gallery.")
+            Text("Starting the gallery shares previews from the selected libraries. Recipients can save or screenshot photos they view. Keep the Mac awake and logged in; the background service runs independently of the main app. Configure Tailscale Serve separately and never use Funnel for this gallery.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
+            Text("First authorize the background helper, then start sharing at login. Select the same shared library packages when prompted. The helper has its own Photos permission and read-only file grants; your main app permissions and caches are kept.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
             HStack {
-                Text(server.statusMessage)
+                Button("Authorize Background Libraries…") { backgroundService.authorizeLibraries() }
+                    .disabled(backgroundService.isAuthorizing)
+                Button("Login Item Settings…") { backgroundService.openLoginSettings() }
+            }
+
+            HStack {
+                Text(backgroundService.statusMessage)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                if server.isRunning {
-                    Button("Stop Sharing", role: .destructive) { server.stop() }
+                if backgroundService.isEnabled {
+                    Button("Stop Sharing", role: .destructive) { backgroundService.disable() }
                 } else {
-                    Button("Start Sharing") {
-                        server.start(registry: registry, systemModel: systemModel, store: store)
+                    Button("Start Sharing at Login") {
+                        backgroundService.enable()
                     }
                     .buttonStyle(.borderedProminent)
+                    .disabled(backgroundService.isAuthorizing)
                 }
             }
         }
+        .onAppear { backgroundService.configure(registry: registry, server: server) }
         .padding(24)
         .frame(width: 620, height: preferredHeight)
     }

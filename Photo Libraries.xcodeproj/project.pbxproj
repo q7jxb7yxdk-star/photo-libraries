@@ -12,6 +12,9 @@
 		000000000000000200000012 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000006 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift */; };
 		000000000000000200000013 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000200000007 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift */; };
 		000000000000000200000051 /* PhotoLibrariesDirectHelper in Embed Helper */ = {isa = PBXBuildFile; fileRef = 000000000000000200000001 /* PhotoLibrariesDirectHelper */; };
+		000000000000000300000010 /* GalleryHelperMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000300000003; };
+		000000000000000300000051 /* Web Gallery in LoginItems */ = {isa = PBXBuildFile; fileRef = 000000000000000300000001; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		000000000000000300000052 /* Direct Helper in Gallery */ = {isa = PBXBuildFile; fileRef = 000000000000000200000001; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,6 +25,7 @@
 			remoteGlobalIDString = 000000000000000200000000;
 			remoteInfo = PhotoLibrariesDirectHelper;
 		};
+		000000000000000300000041 = {isa = PBXContainerItemProxy; containerPortal = 000000000000000000000000; proxyType = 1; remoteGlobalIDString = 000000000000000300000000; remoteInfo = PhotoLibrariesWebGallery; };
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +38,20 @@
 			);
 			name = "Embed Helper";
 		};
+		000000000000000300000050 /* Embed Login Item */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Library/LoginItems";
+			dstSubfolder = Product;
+			files = (000000000000000300000051, );
+			name = "Embed Login Item";
+		};
+		000000000000000300000053 /* Embed Gallery Direct Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Helpers";
+			dstSubfolder = Product;
+			files = (000000000000000300000052, );
+			name = "Embed Gallery Direct Helper";
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +62,9 @@
 		000000000000000200000005 /* DirectLibraryHelper/Helper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = DirectLibraryHelper/Helper.entitlements; sourceTree = "<group>"; };
 		000000000000000200000006 /* Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo Libraries/PhotoKit/RegisteredPhotoLibraryProvider.swift"; sourceTree = "<group>"; };
 		000000000000000200000007 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo Libraries/PhotoKit/DirectLibraryWorker.swift"; sourceTree = "<group>"; };
+		000000000000000300000001 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoLibrariesWebGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000300000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebGalleryHelper/GalleryHelperMain.swift; sourceTree = "<group>"; };
+		000000000000000300000005 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WebGalleryHelper/Helper.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -65,6 +86,7 @@
 			files = (
 			);
 		};
+		000000000000000300000022 = {isa = PBXFrameworksBuildPhase; files = (); };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -73,6 +95,7 @@
 			children = (
 				000000000000000000000010 /* Photo Libraries */,
 				000000000000000200000002 /* DirectLibraryHelper */,
+				000000000000000300000002 /* WebGalleryHelper */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +105,7 @@
 			children = (
 				000000000000000000000120 /* Photo Libraries.app */,
 				000000000000000200000001 /* PhotoLibrariesDirectHelper */,
+				000000000000000300000001 /* PhotoLibrariesWebGallery.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +122,12 @@
 			name = DirectLibraryHelper;
 			sourceTree = "<group>";
 		};
+		000000000000000300000002 /* WebGalleryHelper */ = {
+			isa = PBXGroup;
+			children = (000000000000000300000003, 000000000000000300000005, );
+			name = WebGalleryHelper;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -109,11 +139,13 @@
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
 				000000000000000200000050 /* Embed Helper */,
+				000000000000000300000050 /* Embed Login Item */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				000000000000000200000040 /* PBXTargetDependency */,
+				000000000000000300000040 /* Gallery dependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* Photo Libraries */,
@@ -136,6 +168,18 @@
 			productName = PhotoLibrariesDirectHelper;
 			productReference = 000000000000000200000001 /* PhotoLibrariesDirectHelper */;
 			productType = "com.apple.product-type.tool";
+		};
+		000000000000000300000000 /* PhotoLibrariesWebGallery */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000300000030;
+			buildPhases = (000000000000000300000020, 000000000000000300000022, 000000000000000300000023, 000000000000000300000053, );
+			buildRules = ();
+			dependencies = (000000000000000300000042, );
+			fileSystemSynchronizedGroups = (000000000000000000000010, );
+			name = PhotoLibrariesWebGallery;
+			productName = PhotoLibrariesWebGallery;
+			productReference = 000000000000000300000001;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -171,6 +215,7 @@
 			targets = (
 				000000000000000100000000 /* Photo Libraries */,
 				000000000000000200000000 /* PhotoLibrariesDirectHelper */,
+				000000000000000300000000 /* PhotoLibrariesWebGallery */,
 			);
 		};
 /* End PBXProject section */
@@ -181,6 +226,7 @@
 			files = (
 			);
 		};
+		000000000000000300000023 = {isa = PBXResourcesBuildPhase; files = (); };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -198,6 +244,7 @@
 				000000000000000200000013 /* Photo Libraries/PhotoKit/DirectLibraryWorker.swift in Sources */,
 			);
 		};
+		000000000000000300000020 = {isa = PBXSourcesBuildPhase; files = (000000000000000300000010, ); };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -206,6 +253,8 @@
 			target = 000000000000000200000000 /* PhotoLibrariesDirectHelper */;
 			targetProxy = 000000000000000200000041 /* PBXContainerItemProxy */;
 		};
+		000000000000000300000040 = {isa = PBXTargetDependency; target = 000000000000000300000000; targetProxy = 000000000000000300000041; };
+		000000000000000300000042 = {isa = PBXTargetDependency; target = 000000000000000200000000; targetProxy = 000000000000000200000041; };
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -453,6 +502,68 @@
 			};
 			name = Release;
 		};
+		000000000000000300000031 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WebGalleryHelper/Helper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261001;
+				DEVELOPMENT_TEAM = WX793X49GJ;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Libraries Web Gallery";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "The background Web Gallery reads your System Photo Library to share selected photos and videos with allowed Tailscale users.";
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunny.photo-libraries.web-gallery";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "WEB_GALLERY_HELPER DEBUG $(inherited)";
+			};
+			name = Debug;
+		};
+		000000000000000300000032 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WebGalleryHelper/Helper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261001;
+				DEVELOPMENT_TEAM = WX793X49GJ;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Libraries Web Gallery";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "The background Web Gallery reads your System Photo Library to share selected photos and videos with allowed Tailscale users.";
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sunny.photo-libraries.web-gallery";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "WEB_GALLERY_HELPER $(inherited)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -478,6 +589,11 @@
 				000000000000000200000031 /* Debug configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */,
 				000000000000000200000032 /* Release configuration for PBXNativeTarget "PhotoLibrariesDirectHelper" */,
 			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000300000030 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (000000000000000300000031, 000000000000000300000032, );
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

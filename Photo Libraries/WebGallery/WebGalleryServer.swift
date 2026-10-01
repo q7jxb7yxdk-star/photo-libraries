@@ -48,6 +48,7 @@ final class WebGalleryServer: ObservableObject {
     private var appIconPNGBySize: [Int: Data] = [:]
 
     private struct Context {
+        let id = UUID()
         let registry: LibraryRegistry
         let systemModel: SystemPhotoLibraryViewModel
         let store: LibraryPreviewStore
@@ -60,6 +61,20 @@ final class WebGalleryServer: ObservableObject {
             .compactMap(UUID.init(uuidString:)).map(LibraryID.init(rawValue:)))
         expectedHost = defaults.string(forKey: Self.hostKey) ?? ""
         mapsToken = defaults.string(forKey: Self.mapsTokenKey) ?? ""
+    }
+
+    var hasValidConfiguration: Bool {
+        Self.validServeHost(expectedHost) != nil && !allowedLogins.isEmpty && !sharedLibraryIDs.isEmpty
+    }
+
+    /// Only the background process consumes this snapshot. Settings in the main
+    /// process remain in its original defaults domain.
+    func applyConfiguration(_ snapshot: WebGallerySharedConfiguration.Snapshot) {
+        expectedHost = snapshot.expectedHost
+        mapsToken = snapshot.mapsToken
+        allowedLogins = snapshot.allowedLogins
+        sharedLibraryIDs = Set(snapshot.sharedLibraryIDs.compactMap(UUID.init(uuidString:))
+            .map(LibraryID.init(rawValue:)))
     }
 
     func useSearchModel(_ model: UnifiedSearchViewModel) {
@@ -205,8 +220,8 @@ final class WebGalleryServer: ObservableObject {
         client.start()
     }
 
-    private func authorize(_ request: WebGalleryHTTPRequest) -> String? {
-        guard isRunning, context != nil else { return nil }
+    private func authorize(_ request: WebGalleryHTTPRequest, for expectedContext: Context) -> String? {
+        guard isRunning, context?.id == expectedContext.id else { return nil }
         guard let host = Self.validServeHost(expectedHost) else { return nil }
         guard request.headers["host"]?.lowercased() == host,
               let login = request.headers["tailscale-user-login"]?.lowercased(),
@@ -238,7 +253,7 @@ final class WebGalleryServer: ObservableObject {
     }
 
     private func route(_ request: WebGalleryHTTPRequest) async -> WebGalleryHTTPResponse {
-        guard let login = authorize(request), let context else {
+        guard let context, let login = authorize(request, for: context) else {
             return .text(403, "Access requires an allowed Tailscale Serve user")
         }
         guard let host = Self.validServeHost(expectedHost) else { return .text(403, "Invalid Serve host") }
@@ -329,7 +344,7 @@ final class WebGalleryServer: ObservableObject {
                 let memories = await Task.detached(priority: .utility) {
                     MemoryGenerator.generate(from: photos, now: Date())
                 }.value
-                guard authorize(request) == login,
+                guard authorize(request, for: context) == login,
                       snapshots.allSatisfy({ sharedLibraryIDs.contains($0.library.id) }),
                       snapshots.allSatisfy({ !$0.library.descriptor.kind.isSystemPhotoLibrary
                           || systemProvider.authorizationStatus().permitsReading }) else {
@@ -459,7 +474,7 @@ final class WebGalleryServer: ObservableObject {
                             pixelWidth: item.width, pixelHeight: item.height,
                             fileSize: item.fileSize, filename: item.filename
                         ) : extracted
-                    guard authorize(request) == login,
+                    guard authorize(request, for: context) == login,
                           sharedLibrary(library, context: context) != nil,
                           systemProvider.isWebVisibleWebMedia(id) else {
                         return .text(404, "Image unavailable")
@@ -475,7 +490,7 @@ final class WebGalleryServer: ObservableObject {
                         pixelWidth: item.width, pixelHeight: item.height,
                         fileSize: item.fileSize, filename: item.filename
                     )
-                    guard authorize(request) == login,
+                    guard authorize(request, for: context) == login,
                           sharedLibrary(library, context: context) != nil,
                           context.store.manifest(for: snapshots[0].library.id)?
                             .items.contains(where: { $0.id == id }) == true else {
@@ -509,7 +524,7 @@ final class WebGalleryServer: ObservableObject {
                     return json(["address": ""])
                 }
                 let place = await placeNameResolver.resolve(coordinate)
-                guard authorize(request) == login,
+                guard authorize(request, for: context) == login,
                       sharedLibrary(library, context: context) != nil else {
                     return .text(404, "Location unavailable")
                 }
@@ -535,7 +550,7 @@ final class WebGalleryServer: ObservableObject {
                     for: itemID,
                     maximumPixelLength: size == "thumb" ? 480 : 4096
                 )
-                guard authorize(request) == login,
+                guard authorize(request, for: context) == login,
                       sharedLibrary(rawLibrary, context: context) != nil,
                       systemProvider.isWebVisibleWebMedia(itemID),
                       let data else { return .text(404, "Image unavailable") }
@@ -547,7 +562,7 @@ final class WebGalleryServer: ObservableObject {
                 prefersViewer: size == "viewer",
                 directProvider: directProvider(for: library)
             )
-            guard authorize(request) == login,
+            guard authorize(request, for: context) == login,
                   sharedLibrary(rawLibrary, context: context) != nil,
                   context.store.manifest(for: library.id)?
                     .items.contains(where: { $0.id == itemID }) == true,
@@ -585,7 +600,7 @@ final class WebGalleryServer: ObservableObject {
                     ? context.store.livePhotoVideoURL(for: itemID, libraryID: library.id)
                     : context.store.playbackVideoURL(for: itemID, libraryID: library.id)
                 if let cachedURL {
-                    guard authorize(request) == login,
+                    guard authorize(request, for: context) == login,
                           sharedLibrary(rawLibrary, context: context) != nil,
                           context.store.manifest(for: library.id)?
                             .items.contains(where: { $0.id == itemID }) == true else {
@@ -617,7 +632,7 @@ final class WebGalleryServer: ObservableObject {
                         try? FileManager.default.removeItem(at: directory)
                         return .text(500, "Video conversion failed")
                     }
-                    guard authorize(request) == login,
+                    guard authorize(request, for: context) == login,
                           sharedLibrary(rawLibrary, context: context) != nil,
                           (try? await gallerySnapshots(for: rawLibrary, context: context))?
                             .first?.items.contains(where: {
@@ -639,7 +654,7 @@ final class WebGalleryServer: ObservableObject {
                         )
                     }
                     try? FileManager.default.removeItem(at: directory)
-                    guard authorize(request) == login,
+                    guard authorize(request, for: context) == login,
                           sharedLibrary(rawLibrary, context: context) != nil,
                           let cachedURL = live
                             ? context.store.livePhotoVideoURL(for: itemID, libraryID: library.id)
@@ -661,7 +676,7 @@ final class WebGalleryServer: ObservableObject {
             }
             let key = SystemVideoKey(itemID: itemID, live: live)
             guard let fileURL = await systemVideoURL(for: key),
-                  authorize(request) == login,
+                  authorize(request, for: context) == login,
                   sharedLibrary(rawLibrary, context: context) != nil,
                   (try? await gallerySnapshots(for: rawLibrary, context: context))?
                     .first?.items.contains(where: {

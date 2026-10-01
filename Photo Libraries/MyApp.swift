@@ -125,11 +125,12 @@ private struct PhotoViewerCommands: Commands {
     }
 }
 
+#if !WEB_GALLERY_HELPER
 @main struct MyApp: App {
     @StateObject private var registry = LibraryRegistry()
     @StateObject private var systemModel = SystemPhotoLibraryViewModel()
     @StateObject private var previewStore = LibraryPreviewStore.shared
-    @State private var didAttemptGalleryAutoStart = false
+    @State private var didConfigureGalleryService = false
 
     var body: some Scene {
         WindowGroup {
@@ -140,12 +141,10 @@ private struct PhotoViewerCommands: Commands {
             )
                 .background(WindowInitialFillView())
                 .task {
-                    guard !didAttemptGalleryAutoStart else { return }
-                    didAttemptGalleryAutoStart = true
-                    WebGalleryServer.shared.start(
-                        registry: registry,
-                        systemModel: systemModel,
-                        store: previewStore
+                    guard !didConfigureGalleryService else { return }
+                    didConfigureGalleryService = true
+                    WebGalleryBackgroundService.shared.configure(
+                        registry: registry, server: .shared
                     )
                 }
         }
@@ -164,3 +163,5 @@ private struct PhotoViewerCommands: Commands {
         }
     }
 }
+
+#endif

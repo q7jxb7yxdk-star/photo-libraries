@@ -17,8 +17,12 @@ final class LibraryRegistry: ObservableObject {
         didSet { persist() }
     }
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, descriptors initialDescriptors: [LibraryDescriptor]? = nil) {
         self.defaults = defaults
+        if let descriptors = initialDescriptors {
+            self.descriptors = descriptors
+            return
+        }
         guard let data = defaults.data(forKey: Constants.defaultsKey),
               let decoded = try? decoder.decode([LibraryDescriptor].self, from: data) else {
             descriptors = []

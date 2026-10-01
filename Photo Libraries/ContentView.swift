@@ -19,7 +19,7 @@ struct ContentView: View {
     @StateObject private var registeredLibraryProbe = RegisteredLibraryProbeModel()
     @StateObject private var unifiedSearch = UnifiedSearchViewModel()
     @StateObject private var transferCoordinator = PhotoTransferCoordinator()
-    @ObservedObject private var webGallery = WebGalleryServer.shared
+    @ObservedObject private var webGallery = WebGalleryBackgroundService.shared
     @State private var selection: SidebarSelection? = .allLibraries
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var hasRestoredBrowserState = false
@@ -35,7 +35,6 @@ struct ContentView: View {
             selectedDetail
         }
         .onAppear {
-            webGallery.useSearchModel(unifiedSearch)
             guard !hasRestoredBrowserState else { return }
             selection = restoredSelection()
             if UserDefaults.standard.object(forKey: "library-browser.sidebar-visible") != nil {
